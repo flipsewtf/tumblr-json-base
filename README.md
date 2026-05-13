@@ -118,8 +118,6 @@ The utilities in `ui.js` are a mix of universal and theme-specific code. What's 
   `window.bindTooltipNode(el)` for dynamically added content.
 - **Dark mode toggle** - three-way cycle: light → dark → system.
 - **Scroll to top** - shows after 30px of scroll, smooth scrolls back.
-- **Timestamp formatting** - converts Unix timestamps in `.timestamp` elements to relative time
-  (e.g. `3h`, `2d`).
 - **Note count formatting** - shortens note counts in `.notecount` elements (e.g. `1200` → `1k`).
 
 Theme-specific sections for showcasing:
