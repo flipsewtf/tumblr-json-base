@@ -160,9 +160,6 @@ moving the root poster's header below the first media (photoset, for example) - 
 the visual order no longer matches the DOM order, which is confusing for screen readers and keyboard
 navigation, and general overview of a blog.
 
-If you want the legacy aesthetic, CSS can get you most of the way there without touching the DOM
-order.
-
 ## License
 
 MIT - Flipse / [@mournstera](https://mournstera.tumblr.com)
