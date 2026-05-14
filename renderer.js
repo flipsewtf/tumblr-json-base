@@ -202,7 +202,8 @@
 
         if (isGif) {
             const img = document.createElement('img');
-            img.alt = block.alt_text && block.alt_text.toLowerCase() !== 'image' ? block.alt_text : '';
+            img.alt =
+                block.alt_text && block.alt_text.toLowerCase() !== 'image' ? block.alt_text : '';
             img.loading = 'lazy';
 
             const srcsetEntries = media
@@ -225,7 +226,8 @@
             const original = media.find((m) => m.has_original_dimensions);
             figure.dataset.lightboxSrc = original ? original.url : best.url;
             figure.dataset.lightboxType = 'image';
-            if (block.alt_text && block.alt_text.toLowerCase() !== 'image') figure.dataset.lightboxAlt = block.alt_text;
+            if (block.alt_text && block.alt_text.toLowerCase() !== 'image')
+                figure.dataset.lightboxAlt = block.alt_text;
         } else {
             const best = selectMedia(media, 1280);
             if (!best) return null;
@@ -235,14 +237,16 @@
             img.width = best.width;
             img.height = best.height;
             img.loading = 'lazy';
-            img.alt = block.alt_text && block.alt_text.toLowerCase() !== 'image' ? block.alt_text : '';
+            img.alt =
+                block.alt_text && block.alt_text.toLowerCase() !== 'image' ? block.alt_text : '';
 
             figure.appendChild(img);
 
             const original = media.find((m) => m.has_original_dimensions);
             figure.dataset.lightboxSrc = original ? original.url : best.url;
             figure.dataset.lightboxType = 'image';
-            if (block.alt_text && block.alt_text.toLowerCase() !== 'image') figure.dataset.lightboxAlt = block.alt_text;
+            if (block.alt_text && block.alt_text.toLowerCase() !== 'image')
+                figure.dataset.lightboxAlt = block.alt_text;
         }
 
         if (block.caption) {
@@ -295,7 +299,11 @@
         arrowSvg.setAttribute('viewBox', '0 0 24 24');
         arrowSvg.setAttribute('class', 'link__arrow');
         arrowSvg.setAttribute('aria-hidden', 'true');
-        ['M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6', 'm21 3-9 9', 'M15 3h6v6'].forEach((d) => {
+        [
+            'M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6',
+            'm21 3-9 9',
+            'M15 3h6v6',
+        ].forEach((d) => {
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             path.setAttribute('d', d);
             arrowSvg.appendChild(path);
@@ -361,7 +369,9 @@
             const desc = document.createElement('div');
             desc.classList.add('link__description');
             desc.textContent =
-                block.description.length > 250 ? block.description.slice(0, 250).trim() + '…' : block.description;
+                block.description.length > 250
+                    ? block.description.slice(0, 250).trim() + '…'
+                    : block.description;
             body.appendChild(desc);
         }
 
@@ -393,7 +403,10 @@
                 }
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allowtransparency', 'true');
-                iframe.setAttribute('allow', 'clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+                iframe.setAttribute(
+                    'allow',
+                    'clipboard-write; encrypted-media; fullscreen; picture-in-picture',
+                );
                 figure.appendChild(iframe);
             } else if (block.embed_html) {
                 figure.innerHTML = block.embed_html;
@@ -507,7 +520,11 @@
                 arrowSvg.setAttribute('viewBox', '0 0 24 24');
                 arrowSvg.setAttribute('class', 'viewdashboard');
                 arrowSvg.setAttribute('aria-hidden', 'true');
-                ['M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6', 'm21 3-9 9', 'M15 3h6v6'].forEach((d) => {
+                [
+                    'M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6',
+                    'm21 3-9 9',
+                    'M15 3h6v6',
+                ].forEach((d) => {
                     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                     path.setAttribute('d', d);
                     arrowSvg.appendChild(path);
@@ -627,7 +644,8 @@
                 if (context?.blogName && context?.postId) {
                     const results = document.createElement('a');
                     results.classList.add('poll__results');
-                    results.href = 'https://www.tumblr.com/' + context.blogName + '/' + context.postId;
+                    results.href =
+                        'https://www.tumblr.com/' + context.blogName + '/' + context.postId;
                     results.target = '_blank';
                     results.rel = 'noopener';
                     results.textContent = 'See results';
@@ -641,8 +659,11 @@
 
                 let timeLeft;
                 if (days > 0) timeLeft = days + ' ' + (days === 1 ? 'day' : 'days') + ' remaining';
-                else if (hours > 0) timeLeft = hours + ' ' + (hours === 1 ? 'hour' : 'hours') + ' remaining';
-                else timeLeft = minutes + ' ' + (minutes === 1 ? 'minute' : 'minutes') + ' remaining';
+                else if (hours > 0)
+                    timeLeft = hours + ' ' + (hours === 1 ? 'hour' : 'hours') + ' remaining';
+                else
+                    timeLeft =
+                        minutes + ' ' + (minutes === 1 ? 'minute' : 'minutes') + ' remaining';
 
                 const time = document.createElement('span');
                 time.classList.add('poll__time-left');
@@ -724,7 +745,12 @@
                         isExplicit: block.type === 'image' && row.blocks.length > 1,
                         rowColumns: block.type === 'image' ? row.blocks.length : 0,
                         isList: sub === 'unordered-list-item' || sub === 'ordered-list-item',
-                        listType: sub === 'ordered-list-item' ? 'ol' : sub === 'unordered-list-item' ? 'ul' : null,
+                        listType:
+                            sub === 'ordered-list-item'
+                                ? 'ol'
+                                : sub === 'unordered-list-item'
+                                  ? 'ul'
+                                  : null,
                         isChat: sub === 'chat',
                     });
                 });
@@ -741,7 +767,12 @@
                     isExplicit: false,
                     rowColumns: block.type === 'image' ? 1 : 0,
                     isList: sub === 'unordered-list-item' || sub === 'ordered-list-item',
-                    listType: sub === 'ordered-list-item' ? 'ol' : sub === 'unordered-list-item' ? 'ul' : null,
+                    listType:
+                        sub === 'ordered-list-item'
+                            ? 'ol'
+                            : sub === 'unordered-list-item'
+                              ? 'ul'
+                              : null,
                     isChat: sub === 'chat',
                 });
             });
@@ -755,7 +786,12 @@
                     isExplicit: false,
                     rowColumns: block.type === 'image' ? 1 : 0,
                     isList: sub === 'unordered-list-item' || sub === 'ordered-list-item',
-                    listType: sub === 'ordered-list-item' ? 'ol' : sub === 'unordered-list-item' ? 'ul' : null,
+                    listType:
+                        sub === 'ordered-list-item'
+                            ? 'ol'
+                            : sub === 'unordered-list-item'
+                              ? 'ul'
+                              : null,
                     isChat: sub === 'chat',
                 });
             });
@@ -976,12 +1012,15 @@
         img.alt = '';
         img.loading = 'lazy';
         img.onerror = function () {
-            this.src = 'https://assets.tumblr.com/pop/src/assets/images/avatar/anonymous_avatar_96-223fabe0.png';
+            this.src =
+                'https://assets.tumblr.com/pop/src/assets/images/avatar/anonymous_avatar_96-223fabe0.png';
         };
         avatarWrap.appendChild(img);
 
         const username =
-            isDeactivated || isBroken || !url ? document.createElement('span') : document.createElement('a');
+            isDeactivated || isBroken || !url
+                ? document.createElement('span')
+                : document.createElement('a');
 
         if (!isDeactivated && !isBroken && url) {
             username.href = url;
@@ -1010,7 +1049,15 @@
 
     // -------------------- ASK SECTION --------------------
 
-    function buildAskThread(content, askLayout, askerFallback, answerer, context, isTrail = false, fullLayout = []) {
+    function buildAskThread(
+        content,
+        askLayout,
+        askerFallback,
+        answerer,
+        context,
+        isTrail = false,
+        fullLayout = [],
+    ) {
         const frag = document.createDocumentFragment();
 
         const askIndices = new Set(askLayout.blocks);
@@ -1074,7 +1121,8 @@
                 ? 'https://api.tumblr.com/v2/blog/' + askerName + '/avatar/48'
                 : 'https://assets.tumblr.com/pop/src/assets/images/avatar/anonymous_avatar_96-223fabe0.png');
         askAvatarImg.onerror = function () {
-            this.src = 'https://assets.tumblr.com/pop/src/assets/images/avatar/anonymous_avatar_96-223fabe0.png';
+            this.src =
+                'https://assets.tumblr.com/pop/src/assets/images/avatar/anonymous_avatar_96-223fabe0.png';
         };
         askAvatarImg.alt = '';
         askAvatarImg.loading = 'lazy';
@@ -1083,7 +1131,9 @@
         askMeta.classList.add('ask__meta');
 
         const askUsername =
-            askerUrl && askerActive !== false ? document.createElement('a') : document.createElement('span');
+            askerUrl && askerActive !== false
+                ? document.createElement('a')
+                : document.createElement('span');
         askUsername.classList.add('ask__username');
         askUsername.textContent = askerDisplay;
         if (askerUrl && askerActive !== false) {
@@ -1126,7 +1176,8 @@
                 const answerAvatarImg = document.createElement('img');
                 answerAvatarImg.classList.add('ask__avatar');
                 answerAvatarImg.src =
-                    answerer.avatar || 'https://api.tumblr.com/v2/blog/' + answerer.name + '/avatar/48';
+                    answerer.avatar ||
+                    'https://api.tumblr.com/v2/blog/' + answerer.name + '/avatar/48';
                 answerAvatarImg.onerror = function () {
                     this.src =
                         'https://assets.tumblr.com/pop/src/assets/images/avatar/anonymous_avatar_96-223fabe0.png';
@@ -1202,7 +1253,8 @@
             };
 
             const avatarUrl =
-                getAvatarUrl(entry.blog) ?? (blogInfo?.name === entry.blog?.name ? blogInfo.avatar : null);
+                getAvatarUrl(entry.blog) ??
+                (blogInfo?.name === entry.blog?.name ? blogInfo.avatar : null);
 
             const askLayout = entry.layout?.find((l) => l.type === 'ask') ?? null;
 
@@ -1213,7 +1265,17 @@
                     avatar: avatarUrl,
                     active: entry.blog?.active,
                 };
-                frag.appendChild(buildAskThread(entry.content, askLayout, null, answerer, ctx, true, entry.layout));
+                frag.appendChild(
+                    buildAskThread(
+                        entry.content,
+                        askLayout,
+                        null,
+                        answerer,
+                        ctx,
+                        true,
+                        entry.layout,
+                    ),
+                );
             } else {
                 if (i > 0) {
                     const isBroken = !entry.blog && entry.broken_blog_name != null;
@@ -1277,15 +1339,24 @@
             if (userHeaderEl) {
                 const isReblog = npf.trail && npf.trail.length;
                 const rootEntry = isReblog ? npf.trail[0] : null;
-                const isBrokenRoot = isReblog && !rootEntry.blog && rootEntry.broken_blog_name != null;
+                const isBrokenRoot =
+                    isReblog && !rootEntry.blog && rootEntry.broken_blog_name != null;
 
                 const name = isBrokenRoot
                     ? rootEntry.broken_blog_name || 'unknown'
                     : isReblog && rootEntry.blog
                       ? rootEntry.blog.name
                       : blogName;
-                const av = isBrokenRoot ? null : isReblog && rootEntry.blog ? getAvatarUrl(rootEntry.blog) : avatar;
-                const active = isBrokenRoot ? 'broken' : isReblog && rootEntry.blog ? rootEntry.blog.active : undefined;
+                const av = isBrokenRoot
+                    ? null
+                    : isReblog && rootEntry.blog
+                      ? getAvatarUrl(rootEntry.blog)
+                      : avatar;
+                const active = isBrokenRoot
+                    ? 'broken'
+                    : isReblog && rootEntry.blog
+                      ? rootEntry.blog.active
+                      : undefined;
                 const url = isBrokenRoot
                     ? null
                     : isReblog && rootEntry.blog && rootEntry.post && rootEntry.post.id
@@ -1307,10 +1378,26 @@
 
             if (hasContent) {
                 if (askLayout) {
-                    section.appendChild(buildAskThread(npf.content, askLayout, null, blogInfo, ctx, false, npf.layout));
+                    section.appendChild(
+                        buildAskThread(
+                            npf.content,
+                            askLayout,
+                            null,
+                            blogInfo,
+                            ctx,
+                            false,
+                            npf.layout,
+                        ),
+                    );
                 } else if (hasTrail) {
                     section.appendChild(
-                        createUserHeader(blogName, blogUrl + 'post/' + postId, avatar, undefined, true),
+                        createUserHeader(
+                            blogName,
+                            blogUrl + 'post/' + postId,
+                            avatar,
+                            undefined,
+                            true,
+                        ),
                     );
                     const body = document.createElement('div');
                     body.classList.add('post_body', 'is_trail');
