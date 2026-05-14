@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     expandLink.setAttribute('aria-expanded', 'true');
                     expandLink.remove();
 
-                    const liveRegion = tagsContainer.querySelector('.sr-live');
+                    const liveRegion = tagsContainer.querySelector('.sr-only');
                     if (liveRegion) liveRegion.textContent = 'All tags are now visible.';
                 });
 
@@ -547,23 +547,21 @@ document.addEventListener('DOMContentLoaded', () => {
     window.timeAgo = timeAgo;
 })();
 
-// -------------------- FORMAT NOTES --------------------
-
+// -------------------- FORMAT NOTE COUNTS --------------------
+// formats .notecount elements to shorthand (e.g. 1200 → 1.2k)
+// add has-label to the notecount element to append 'Notes' e.g. <span class="notecount has-label">{NoteCount}</span>
 document.querySelectorAll('.notecount').forEach((el) => {
     const rawNumber = el.textContent.trim().replace(/,/g, '').match(/\d+/);
     if (!rawNumber) return;
-
     const count = parseInt(rawNumber[0], 10);
     if (isNaN(count)) return;
-
     function formatNumber(n) {
         if (n >= 1_000_000) return `${Math.floor(n / 1_000_000)}m`;
         if (n >= 1_000) return `${Math.floor(n / 1_000)}k`;
         return n.toString();
     }
-
     el.textContent = el.classList.contains('has-label')
-        ? `${formatNumber(count)}`
+        ? `${formatNumber(count)} Notes`
         : formatNumber(count);
 });
 
