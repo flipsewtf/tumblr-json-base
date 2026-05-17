@@ -58,6 +58,7 @@
         }
 
         tooltip.classList.add('is-active');
+        onMove(event);
     }
 
     function onMove(event) {
