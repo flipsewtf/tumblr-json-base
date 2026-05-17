@@ -1,3 +1,8 @@
+/*!
+ * renderer.js — NPF JSON renderer
+ * @mournstera | mournstera.tumblr.com
+ */
+
 (function () {
     'use strict';
 
@@ -1075,8 +1080,6 @@
             }
         });
 
-        // Remap rows layout indices from original content positions to answerContent
-        // positions, dropping ask-only blocks so photosets render correctly.
         const answerLayout = [];
         fullLayout.forEach((l) => {
             if (l.type !== 'rows') return;
@@ -1149,7 +1152,7 @@
 
         const askLabel = document.createElement('span');
         askLabel.classList.add('ask-label');
-        askLabel.textContent = 'sent a message';
+        askLabel.textContent = 'asked';
 
         askMeta.appendChild(askUsername);
         askMeta.appendChild(askLabel);
@@ -1186,6 +1189,7 @@
                 answerAvatarImg.loading = 'lazy';
 
                 const answerMeta = document.createElement('div');
+                answerMeta.classList.add('ask__meta');
 
                 const answerUsername =
                     answerer.url && answerer.active !== false
@@ -1226,8 +1230,10 @@
                 answerBlock.appendChild(answerBody);
                 frag.appendChild(answerBlock);
             } else {
+                const answererName = answerer?.name || context?.blogName || 'blog owner';
                 const answerBody = document.createElement('div');
                 answerBody.classList.add('post_block__ask', 'is_original-answer');
+                answerBody.setAttribute('aria-label', 'Answer from ' + answererName);
                 answerBody.appendChild(assembleContent(answerContent, answerLayout, context));
                 frag.appendChild(answerBody);
             }
