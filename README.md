@@ -1,7 +1,7 @@
 # tumblr-json-base
 
 > [!IMPORTANT]  
-> Work in progress - not ready for use yet. html file will be added when ready.
+> Work in progress. Not ready for use. html file will be added when ready.
 
 A base codebase for building Tumblr themes with NPF (Neue Post Format) rendering. Handles the full
 post body - trail, reblogs, asks, images, audio, video, polls, and inline formatting - plus a
@@ -39,7 +39,7 @@ Order matters - `post.js` must come before `renderer.js`.
 
 `ui.js` is optional but contains the tooltip system, which the renderer uses for
 deactivated/unavailable blog indicators. You can drop the rest of `ui.js` and keep just the tooltip
-code if you prefer.
+code if you prefer, or add your own theme-specific scripts in it.
 
 ## Credit
 
@@ -50,12 +50,12 @@ If you use this codebase in your theme, you must include a visible credit link b
 
 ## Files
 
-| File          | Description                                                |
-| ------------- | ---------------------------------------------------------- |
-| `renderer.js` | NPF renderer. Parses post JSON and builds the DOM.         |
-| `post.js`     | Lightbox and native audio player. Required by renderer.js. |
-| `ui.js`       | UI utilities - tooltips, dark mode, scroll-to-top, etc.    |
-| `index.html`  | Base HTML template to build your theme from.               |
+| File          | Description                                                     |
+| ------------- | --------------------------------------------------------------- |
+| `post.js`     | Lightbox and native audio player. Must load before renderer.js. |
+| `renderer.js` | NPF renderer. Parses post JSON and builds the DOM.              |
+| `ui.js`       | UI utilities - tooltips, dark mode, scroll-to-top, etc.         |
+| `index.html`  | Base HTML template to build your theme from.                    |
 
 ## How it works
 
