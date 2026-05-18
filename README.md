@@ -3,9 +3,9 @@
 > [!IMPORTANT]  
 > Work in progress. Not ready for use. html file will be added when ready.
 
-A base codebase for building Tumblr themes with NPF (Neue Post Format) rendering. Handles the full
-post body - trail, reblogs, asks, images, audio, video, polls, and inline formatting - plus a
-lightbox, audio player, and common UI utilities.
+A basecode for building Tumblr themes with NPF (Neue Post Format) rendering. Handles the full post
+body - trail, reblogs, asks, images (inline and photosets), audio, video, polls, and inline
+formatting - plus a lightbox, audio player, and common UI utilities.
 
 ## Accessibility
 
@@ -19,15 +19,20 @@ This codebase is built with accessibility as a baseline, not an afterthought:
   attributes.
 - Deactivated and unavailable blogs are indicated via `data-tooltip` and `aria-label` rather than
   just visual styling.
+- Deactivated/unavailable blog names strip the -deactivated suffix for cleaner screen reader
+  announcements.
 - The tooltip system preserves `title` attributes and restores them on mouse leave, so screen
   readers still get the text.
+- Inline images have alt text from NPF alt_text where available, falling back to empty alt="" rather
+  than omitting the attribute.
+- Video iframes have aria-label identifying the provider.
 
 Contributions that regress accessibility **will not** be accepted.
 
 ## Installation
 
-Upload the files to your Tumblr blog via **Theme assets**. Tumblr will give you a CDN URL for each
-one. Then add them to your theme before `</body>`, in this order:
+Upload the files via **Theme assets**. Tumblr will give you a CDN URL for each one. Then add them to
+your theme before `</body>`, in this order:
 
 ```html
 <script src="post.js"></script>
@@ -99,10 +104,11 @@ play/pause, scrubber, and timestamp. The `<audio>` element is hidden and wired u
 
 ### Instagram embeds
 
-Instagram embeds are intentionally rendered as a card linking to the post on the Tumblr dashboard
-rather than an iframe. Instagram's embed code cannot be made reliably responsive - it fights any
-attempt at sizing. The card is a deliberate tradeoff: you lose inline photo or video, but the layout
-stays intact.
+Instagram embeds use a fixed aspect ratio wrapper (116.11% padding-bottom) mirroring Tumblr's own
+dashboard approach. The declared dimensions in the NPF data are not always accurate so the sizing
+may be slightly off depending on caption length - this is a known limitation shared with Tumblr's
+own rendering. Instagram's embed sizing is controlled by Meta and cannot be overridden from outside
+the iframe.
 
 ## Ask blocks
 
