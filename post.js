@@ -1,5 +1,5 @@
 /*!
- * post.js — lightbox, audio player
+ * post.js - lightbox, audio player
  * @mournstera | mournstera.tumblr.com
  */
 
@@ -177,6 +177,8 @@
 })();
 
 // -------------------- AUDIO PLAYER --------------------
+// Wires interactive controls (play/pause, scrubber, timestamps) onto native
+// Tumblr audio posts after renderer.js has finished building the DOM.
 
 document.addEventListener('npf:rendered', () => {
     const playSVG =
