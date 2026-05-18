@@ -1,5 +1,5 @@
 /*!
- * renderer.js — NPF JSON renderer
+ * renderer.js - NPF JSON renderer
  * @mournstera | mournstera.tumblr.com
  */
 
@@ -43,7 +43,7 @@
         const fitting = candidates.filter((m) => m.width <= maxWidth);
         if (fitting.length) return fitting.reduce((a, b) => (a.width > b.width ? a : b));
 
-        // Nothing fits — return closest overshoot rather than just the smallest
+        // Nothing fits - return closest overshoot rather than just the smallest
         return candidates.reduce((a, b) => (a.width < b.width ? a : b));
     }
 
@@ -366,21 +366,20 @@
 
         anchor.appendChild(poster);
 
-        // ---- BODY ----
-        const body = document.createElement('div');
-        body.classList.add('link__body');
-
         if (block.description) {
+            const body = document.createElement('div');
+            body.classList.add('link__body');
+
             const desc = document.createElement('div');
             desc.classList.add('link__description');
             desc.textContent =
-                block.description.length > 250
-                    ? block.description.slice(0, 250).trim() + '…'
+                block.description.length > 200
+                    ? block.description.slice(0, 200).trim() + '…'
                     : block.description;
             body.appendChild(desc);
+            anchor.appendChild(body);
         }
 
-        anchor.appendChild(body);
         wrapper.appendChild(anchor);
         return wrapper;
     }
@@ -494,57 +493,17 @@
     }
 
     // -------------------- VIDEO BLOCK --------------------
+    // Native Tumblr video renders as a <video> element.
+    // Third-party embeds (YouTube, Instagram, etc.) use an iframe with
+    // a padding-bottom aspect ratio wrapper. Instagram uses a fixed
+    // 116.11% ratio mirroring Tumblr's dashboard; others calculate
+    // the ratio from the NPF embed_iframe dimensions.
 
     function buildVideoNode(block, context) {
-        // Instagram videos are hard to make responsive so we render a card with dashboard link instead.
-        if (block.provider === 'instagram') {
-            const card = document.createElement('div');
-            card.classList.add('instagram-card');
-
-            const igLogo = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            igLogo.setAttribute('viewBox', '0 0 1000 1000');
-            igLogo.setAttribute('class', 'insta');
-            igLogo.setAttribute('aria-hidden', 'true');
-            const igPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            igPath.setAttribute(
-                'd',
-                'M295.42,6c-53.2,2.51-89.53,11-121.29,23.48-32.87,12.81-60.73,30-88.45,57.82S40.89,143,28.17,175.92c-12.31,31.83-20.65,68.19-23,121.42S2.3,367.68,2.56,503.46,3.42,656.26,6,709.6c2.54,53.19,11,89.51,23.48,121.28,12.83,32.87,30,60.72,57.83,88.45S143,964.09,176,976.83c31.8,12.29,68.17,20.67,121.39,23s70.35,2.87,206.09,2.61,152.83-.86,206.16-3.39S799.1,988,830.88,975.58c32.87-12.86,60.74-30,88.45-57.84S964.1,862,976.81,829.06c12.32-31.8,20.69-68.17,23-121.35,2.33-53.37,2.88-70.41,2.62-206.17s-.87-152.78-3.4-206.1-11-89.53-23.47-121.32c-12.85-32.87-30-60.7-57.82-88.45S862,40.87,829.07,28.19c-31.82-12.31-68.17-20.7-121.39-23S637.33,2.3,501.54,2.56,348.75,3.4,295.42,6m5.84,903.88c-48.75-2.12-75.22-10.22-92.86-17-23.36-9-40-19.88-57.58-37.29s-28.38-34.11-37.5-57.42c-6.85-17.64-15.1-44.08-17.38-92.83-2.48-52.69-3-68.51-3.29-202s.22-149.29,2.53-202c2.08-48.71,10.23-75.21,17-92.84,9-23.39,19.84-40,37.29-57.57s34.1-28.39,57.43-37.51c17.62-6.88,44.06-15.06,92.79-17.38,52.73-2.5,68.53-3,202-3.29s149.31.21,202.06,2.53c48.71,2.12,75.22,10.19,92.83,17,23.37,9,40,19.81,57.57,37.29s28.4,34.07,37.52,57.45c6.89,17.57,15.07,44,17.37,92.76,2.51,52.73,3.08,68.54,3.32,202s-.23,149.31-2.54,202c-2.13,48.75-10.21,75.23-17,92.89-9,23.35-19.85,40-37.31,57.56s-34.09,28.38-57.43,37.5c-17.6,6.87-44.07,15.07-92.76,17.39-52.73,2.48-68.53,3-202.05,3.29s-149.27-.25-202-2.53m407.6-674.61a60,60,0,1,0,59.88-60.1,60,60,0,0,0-59.88,60.1M245.77,503c.28,141.8,115.44,256.49,257.21,256.22S759.52,643.8,759.25,502,643.79,245.48,502,245.76,245.5,361.22,245.77,503m90.06-.18a166.67,166.67,0,1,1,167,166.34,166.65,166.65,0,0,1-167-166.34',
-            );
-            igLogo.appendChild(igPath);
-            card.appendChild(igLogo);
-
-            if (context && context.blogName && context.postId) {
-                const igLink = document.createElement('a');
-                igLink.classList.add('instagram-card__link');
-                igLink.href = 'https://www.tumblr.com/' + context.blogName + '/' + context.postId;
-                igLink.target = '_blank';
-                igLink.rel = 'noopener';
-                igLink.append('View instagram post in dashboard ');
-
-                const arrowSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                arrowSvg.setAttribute('viewBox', '0 0 24 24');
-                arrowSvg.setAttribute('class', 'viewdashboard');
-                arrowSvg.setAttribute('aria-hidden', 'true');
-                [
-                    'M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6',
-                    'm21 3-9 9',
-                    'M15 3h6v6',
-                ].forEach((d) => {
-                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    path.setAttribute('d', d);
-                    arrowSvg.appendChild(path);
-                });
-
-                igLink.appendChild(arrowSvg);
-                card.appendChild(igLink);
-            }
-
-            return card;
-        }
-
         const container = document.createElement('div');
         container.classList.add('post_block__video');
 
+        //native
         if (block.provider === 'tumblr' && block.media) {
             const video = document.createElement('video');
             video.controls = true;
@@ -556,15 +515,52 @@
                 video.poster = selectMedia(block.poster, 1280).url;
             }
             container.appendChild(video);
+            // embed
         } else if (block.embed_iframe) {
             const iframe = document.createElement('iframe');
             iframe.src = block.embed_iframe.url;
-            iframe.width = '100%';
-            iframe.removeAttribute('height');
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('allowfullscreen', '');
             iframe.setAttribute('allow', 'fullscreen; picture-in-picture');
-            container.appendChild(iframe);
+            iframe.setAttribute('scrolling', 'no');
+            if (block.provider) iframe.setAttribute('aria-label', block.provider + ' embed');
+
+            // instagram
+            if (block.provider === 'instagram') {
+                const outer = document.createElement('div');
+                outer.classList.add('instagram-wrapper');
+                outer.style.position = 'relative';
+                outer.style.width = '100%';
+                outer.style.paddingBottom = '116.11111111111111%';
+
+                iframe.style.position = 'absolute';
+                iframe.style.top = '0';
+                iframe.style.left = '0';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.setAttribute('aria-label', 'Instagram embed');
+
+                outer.appendChild(iframe);
+                container.appendChild(outer);
+            } else {
+                const w = block.embed_iframe.width;
+                const h = block.embed_iframe.height;
+                const pad = w && h ? ((h / w) * 100).toFixed(4) + '%' : '56.25%';
+
+                const wrap = document.createElement('div');
+                wrap.style.position = 'relative';
+                wrap.style.width = '100%';
+                wrap.style.paddingBottom = pad;
+
+                iframe.style.position = 'absolute';
+                iframe.style.top = '0';
+                iframe.style.left = '0';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+
+                wrap.appendChild(iframe);
+                container.appendChild(wrap);
+            }
         } else if (block.embed_html) {
             container.innerHTML = block.embed_html;
         } else if (block.url) {
@@ -709,7 +705,7 @@
     function resolveLayout(blocks, layout) {
         const rendered = blocks.map((block, i) => ({ block, el: null, index: i }));
 
-        // Pre-build elements — kept separate from layout resolution
+        // Pre-build elements - kept separate from layout resolution
         // so resolveLayout stays pure (index/flag logic only).
         // Elements are attached back by reference before groupItems() runs.
 
@@ -842,7 +838,8 @@
         return segments;
     }
 
-    // Euclid's GCD — used to compute LCM for photoset grid columns.
+    // Euclid's GCD - used to compute LCM for photoset grid columns.
+    // Mads' suggestion, *not written by me*
     function gcd(a, b) {
         while (b) {
             const t = b;
@@ -864,7 +861,8 @@
             gridCols = (gridCols * rc) / gcd(gridCols, rc);
         }
 
-        photoset.style.gridTemplateColumns = 'repeat(' + gridCols + ', 1fr)';
+        photoset.style.gridTemplateColumns = 'repeat(' + gridCols + ', minmax(0, 1fr))'; //
+        photoset.dataset.columns = gridCols;
 
         const lbImages = [];
 
@@ -898,7 +896,7 @@
     }
 
     // Mounts grouped segments into a target node.
-    // Handles inline images (under 350px natural width) unless explicitly
+    // Handles inline images (under 350px natural width) unless _explicitly_
     // placed in a multi-image row by the layout.
     function mountSegments(target, segments) {
         for (const seg of segments) {
@@ -935,7 +933,7 @@
         }
     }
 
-    // Orchestrates resolveLayout → buildNode → groupItems → mountSegments.
+    // Orchestrates resolveLayout -> buildNode -> groupItems -> mountSegments.
     // Handles truncate_after by inserting a "Keep reading" button between
     // the visible and hidden segments.
     function assembleContent(blocks, layout, context) {
@@ -1242,7 +1240,7 @@
         return frag;
     }
 
-    // -------------------- THREAD RENDERER --------------------
+    // -------------------- THREAD (reblog trail) RENDERER --------------------
     // Walks the reblog trail and renders each entry.
     // Index 0 = reblog root; its user header is rendered outside
     // section.post-content by bootstrap(), so we skip it here.
@@ -1310,7 +1308,7 @@
 
     // -------------------- BOOTSTRAP --------------------
     // Finds each article, populates .user-header and section.post-content
-    // from the NPF data embedded in .npf_data by the Tumblr template.
+    // (from the NPF data embedded in .npf_data div in html doc)
 
     function bootstrap() {
         const html = document.documentElement;
