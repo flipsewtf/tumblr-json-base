@@ -172,9 +172,9 @@ moving the root poster's header below the first media (photoset, for example) - 
 the visual order no longer matches the DOM order, which is confusing for screen readers and keyboard
 navigation, and general overview of a blog.
 
-## Credit
+## Credits
 
-SVG icons: [Lucide](hhttps://lucide.dev/) & [Tabler](https://tabler.io/icons).
+SVG icons: [Lucide](hhttps://lucide.dev/) and [Tabler](https://tabler.io/icons).
 
 Euclid’s GCD: inspired by a GCD approach from
 https://gist.github.com/zlw5009/2b886c3b87f964fde865b59dde19c685, adapted for this project by Mads
