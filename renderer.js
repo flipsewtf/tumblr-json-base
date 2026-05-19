@@ -342,17 +342,19 @@
                 hostSvg.setAttribute('viewBox', '0 0 24 24');
                 hostSvg.setAttribute('class', 'link__host-icon');
                 hostSvg.setAttribute('aria-hidden', 'true');
-                [
-                    'M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0',
-                    'M3.6 9h16.8',
-                    'M3.6 15h16.8',
-                    'M11.5 3a17 17 0 0 0 0 18',
-                    'M12.5 3a17 17 0 0 1 0 18',
-                ].forEach((d) => {
+                ['M9 17H7A5 5 0 0 1 7 7h2', 'M15 7h2a5 5 0 1 1 0 10h-2'].forEach((d) => {
                     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                     path.setAttribute('d', d);
                     hostSvg.appendChild(path);
                 });
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', '8');
+                line.setAttribute('x2', '16');
+                line.setAttribute('y1', '12');
+                line.setAttribute('y2', '12');
+
+                hostSvg.appendChild(line);
 
                 const hostSpan = document.createElement('span');
                 hostSpan.classList.add('link__host');
