@@ -139,22 +139,28 @@ This repo is intentionally minimal - it handles rendering and common interaction
 assumptions about CSS or layout. Build your theme's styles on top of the class names the renderer
 outputs.
 
-Key class names from the renderer:
+## Key class names from the renderer
 
-| Class                   | What it is                                     |
-| ----------------------- | ---------------------------------------------- |
-| `.post_body`            | Wrapper for each post or trail entry's content |
-| `.post_block__photo`    | Single image or photoset container             |
-| `.post_block__photoset` | Multi-image grid                               |
-| `.post_block__link`     | Link post                                      |
-| `.post_block__audio`    | Audio block figure                             |
-| `.post_block__video`    | Video block container                          |
-| `.post_block__poll`     | Poll container                                 |
-| `.post_block__ask`      | Ask or answer body                             |
-| `.ask__container`       | Full ask or answer block including header      |
-| `.user-header`          | Blog avatar + username row                     |
-| `.is_root`              | First entry in a reblog trail                  |
-| `.is_trail`             | succeeding trail entries                       |
+| Class                       | What it is                                            |
+| --------------------------- | ----------------------------------------------------- |
+| `.user-header`              | Blog avatar + username row                            |
+| `.user-header__avatar`      | Avatar image container                                |
+| `.user-header__name`        | Blog name link                                        |
+| `.user-header__original`    | Original post author header (article header)          |
+| `.user-header__root`        | Root post author in a reblog chain (article header)   |
+| `.user-header__trail`       | Reblog trail author header (inside post content)      |
+| `.post_body`                | Wrapper for post or trail entry content               |
+| `.post_block__photo`        | Single image, photoset container, or inline image     |
+| `.post_block__photoset`     | Photoset grid                                         |
+| `.post_block__inline_image` | Inline image below 350px                              |
+| `.post_block__link`         | Link post                                             |
+| `.post_block__audio`        | Audio block figure                                    |
+| `.post_block__video`        | Video block container                                 |
+| `.post_block__poll`         | Poll container                                        |
+| `.post_block__ask`          | Ask or answer body                                    |
+| `.ask__container`           | Full ask/answer block including header                |
+| `.is_root`                  | First entry in reblog trail (applied to `.post_body`) |
+| `.is_trail`                 | Reblog trail entries (applied to `.post_body`)        |
 
 To explore the full output, open your browser's DevTools and inspect a rendered post - the DOM is
 the documentation. Every class name the renderer produces will be visible there.
@@ -165,6 +171,16 @@ This basecode does not mimic the old Tumblr legacy layout. While I love the nost
 moving the root poster's header below the first media (photoset, for example) - it comes at a cost:
 the visual order no longer matches the DOM order, which is confusing for screen readers and keyboard
 navigation, and general overview of a blog.
+
+## Credit
+
+SVG icons: [Lucide](hhttps://lucide.dev/) & [Tabler](https://tabler.io/icons).
+
+Euclid’s GCD: inspired by a GCD approach from
+https://gist.github.com/zlw5009/2b886c3b87f964fde865b59dde19c685, adapted for this project by Mads
+(link tba).
+
+Node builder reg simplification by Mads (link tba).
 
 ## License
 
