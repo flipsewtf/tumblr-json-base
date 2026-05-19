@@ -988,10 +988,20 @@
 
     // -------------------- USER HEADER --------------------
 
-    function createUserHeader(name, url, avatarUrl, active, isTrail = false) {
+    function createUserHeader(
+        name,
+        url,
+        avatarUrl,
+        active,
+        isTrail = false,
+        isRoot = false,
+        isOriginal = false,
+    ) {
         const header = document.createElement('div');
         header.classList.add('user-header');
         if (isTrail) header.classList.add('user-header__trail');
+        if (isRoot) header.classList.add('user-header__root');
+        if (isOriginal) header.classList.add('user-header__original');
 
         const isDeactivated = active === false;
         const isBroken = active === 'broken';
@@ -1367,8 +1377,13 @@
                       ? rootEntry.blog.url + 'post/' + rootEntry.post.id
                       : blogUrl;
 
-                const built = createUserHeader(name, url, av, active, false);
-                while (built.firstChild) userHeaderEl.appendChild(built.firstChild);
+                const built = createUserHeader(name, url, av, active, false, isReblog, !isReblog);
+
+                userHeaderEl.className = built.className;
+
+                while (built.firstChild) {
+                    userHeaderEl.appendChild(built.firstChild);
+                }
             }
 
             const hasTrail = npf.trail && npf.trail.length;
