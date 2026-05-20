@@ -1318,6 +1318,73 @@
         return frag;
     }
 
+    // -------------------- STATIC PAGE --------------------
+    // Handles static pages (custom pages, ask, submit) in Tumblr's preview sandbox,
+    // where {NPF} is always empty. Reads raw HTML from .page_body_raw, remaps
+    // elements to theme classes, and prepends the ask/submit label heading if needed.
+    // Retains any class names the user added to elements
+
+    function buildPageFallback(article, section, html) {
+        if (html.classList.contains('ask_page') || html.classList.contains('submit_page')) return;
+        const rawEl = article.querySelector('.page_body_raw template');
+        if (!rawEl) return;
+        const raw = rawEl.content;
+
+        const body = document.createElement('div');
+        body.classList.add('post_body');
+
+        function remapNode(node) {
+            if (node.nodeType !== Node.ELEMENT_NODE) return node.cloneNode(true);
+            const tag = node.tagName.toLowerCase();
+
+            let el;
+
+            if (tag === 'h1') {
+                el = document.createElement('h2');
+                el.classList.add('post-heading1');
+            } else if (tag === 'h2') {
+                el = document.createElement('h3');
+                el.classList.add('post-heading2');
+            } else if (tag === 'ul') {
+                el = document.createElement('ul');
+                el.classList.add('post-ul');
+            } else if (tag === 'ol') {
+                el = document.createElement('ol');
+                el.classList.add('post-ol');
+            } else if (tag === 'li') {
+                el = document.createElement('li');
+                el.classList.add('post-ul-item');
+            } else if (tag === 'iframe') {
+                el = node.cloneNode(true);
+                return el;
+            } else {
+                el = node.cloneNode(false);
+            }
+
+            for (const cls of node.classList) {
+                el.classList.add(cls);
+            }
+
+            for (const child of node.childNodes) {
+                el.appendChild(remapNode(child));
+            }
+
+            return el;
+        }
+
+        for (const node of raw.childNodes) {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                const p = document.createElement('p');
+                p.textContent = node.textContent;
+                body.appendChild(p);
+            } else {
+                body.appendChild(remapNode(node));
+            }
+        }
+
+        section.appendChild(body);
+    }
+
     // -------------------- BOOTSTRAP --------------------
     // Finds each article, populates .user-header and section.post-content
     // (from the NPF data embedded in .npf_data div in html doc)
@@ -1381,7 +1448,9 @@
 
                 const built = createUserHeader(name, url, av, active, false, isReblog, !isReblog);
 
-                userHeaderEl.className = built.className;
+                userHeaderEl.classList.add(
+                    isReblog ? 'user-header__root' : 'user-header__original',
+                );
 
                 while (built.firstChild) {
                     userHeaderEl.appendChild(built.firstChild);
@@ -1391,6 +1460,11 @@
             const hasTrail = npf.trail && npf.trail.length;
             const hasContent = npf.content && npf.content.length;
             const askLayout = npf.layout ? npf.layout.find((l) => l.type === 'ask') : null;
+
+            if ((!hasTrail && !hasContent) || article.id === 'post-') {
+                buildPageFallback(article, section, html);
+                return;
+            }
 
             if (hasTrail) {
                 const thread = buildThread(npf.trail, blogInfo);
