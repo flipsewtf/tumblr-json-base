@@ -51,7 +51,7 @@ code if you prefer, or add your own theme-specific scripts in it.
 If you use this codebase in your theme, you must include a visible credit link back to either:
 
 - This repo: `https://github.com/flipsewtf/tumblr-json-base`
-- or [@mournstera](https://mournstera.tumblr.com)
+- or [mournstera.tumblr.com](https://mournstera.tumblr.com)
 
 ## Files
 
@@ -78,6 +78,29 @@ posts with messy `embed_html` (e.g. Instagram). These errors are harmless - post
 correctly!
 
 (The console for Tumblr is messy anyways.)
+
+### Static pages
+
+Custom static pages (e.g. `/about`, `/faq`) send empty NPF in both the preview sandbox and on the
+live blog — Tumblr does not populate `{NPF}` for them. To work around this, the template includes a
+hidden div with a `<template>` tag containing `{Body}`:
+
+```html
+<div class="page_body_raw" hidden aria-hidden="true"><template>{Body}</template></div>
+```
+
+The `<template>` tag keeps the content inert — the browser does not render or execute it, so iframes
+and other embeds inside `{Body}` do not load. For posts, `{Body}` outputs nothing for
+photo/video/audio types, so the template is empty and there is no overhead.
+
+`buildPageFallback()` in `renderer.js` reads from this template and remaps the raw HTML to theme
+classes — `<h2>` becomes `<h3 class="post-heading2">`, `<ul>` gets `post-ul`, and so on. Any class
+names the user added in the page editor are preserved alongside the theme classes.
+
+Ask and submit pages are excluded from `buildPageFallback()` entirely. They use hardcoded
+`{block:AskPage}` and `{block:SubmitPage}` template blocks instead, because Tumblr's iframe resize
+script needs to control the ask/submit form iframes directly — routing them through JS breaks the
+responsive height behaviour.
 
 ### User headers
 
@@ -177,10 +200,9 @@ navigation, and general overview of a blog.
 SVG icons: [Lucide](https://lucide.dev/) and [Tabler](https://tabler.io/icons).
 
 Euclid’s GCD: inspired by a GCD approach from
-https://gist.github.com/zlw5009/2b886c3b87f964fde865b59dde19c685, adapted for this project by Mads
-(link tba).
-
-Node builder reg simplification by Mads (link tba).
+[this post](https://gist.github.com/zlw5009/2b886c3b87f964fde865b59dde19c685), adapted for this
+project by [Mads](https://bsky.app/profile/Madsshule.bsky.social), as well as Node builder reg
+simplification.
 
 ## License
 
