@@ -4,8 +4,8 @@
 > Work in progress. Not ready for use. html file will be added when ready.
 
 A basecode for building Tumblr themes with NPF (Neue Post Format) rendering. Handles the full post
-body - trail, reblogs, asks, images (inline and photosets), audio, video, polls, and inline
-formatting - plus a lightbox, audio player, and common UI utilities.
+body — trail, reblogs, asks, images (inline and photosets), audio, video, polls, and inline
+formatting — plus a lightbox, audio player, and common UI utilities.
 
 ## Accessibility
 
@@ -40,7 +40,7 @@ your theme before `</body>`, in this order:
 <script src="ui.js"></script>
 ```
 
-Order matters - `post.js` must come before `renderer.js`.
+Order matters — `post.js` must come before `renderer.js`.
 
 `ui.js` is optional but contains the tooltip system, which the renderer uses for
 deactivated/unavailable blog indicators. You can drop the rest of `ui.js` and keep just the tooltip
@@ -53,13 +53,15 @@ If you use this codebase in your theme, you must include a visible credit link b
 - This repo: `https://github.com/flipsewtf/tumblr-json-base`
 - or [mournstera.tumblr.com](https://mournstera.tumblr.com)
 
+In your theme file and/or credit page.
+
 ## Files
 
 | File          | Description                                                     |
 | ------------- | --------------------------------------------------------------- |
 | `post.js`     | Lightbox and native audio player. Must load before renderer.js. |
 | `renderer.js` | NPF renderer. Parses post JSON and builds the DOM.              |
-| `ui.js`       | UI utilities - tooltips, dark mode, scroll-to-top, etc.         |
+| `ui.js`       | UI utilities — tooltips, dark mode, scroll-to-top, etc.         |
 | `index.html`  | Base HTML template to build your theme from.                    |
 
 ## How it works
@@ -69,12 +71,12 @@ If you use this codebase in your theme, you must include a visible credit link b
 NPF data is embedded in a hidden `<div>` containing `{NPF}` rather than `{JsNPF}` in a `<script>`
 tag. This is intentional for two reasons:
 
-1. **Preserves emoji** - `{JsNPF}` strips emoji characters on the live blog.
-2. **Works in Tumblr's preview sandbox** - `<script>` tag contents are treated differently in
+1. **Preserves emoji** — `{JsNPF}` strips emoji characters on the live blog.
+2. **Works in Tumblr's preview sandbox** — `<script>` tag contents are treated differently in
    preview and cause empty posts.
 
 The tradeoff is that the browser parses the div contents as HTML, which produces console errors for
-posts with messy `embed_html` (e.g. Instagram). These errors are harmless - posts still render
+posts with messy `embed_html` (e.g. Instagram). These errors are harmless — posts still render
 correctly!
 
 (The console for Tumblr is messy anyways.)
@@ -129,13 +131,13 @@ play/pause, scrubber, and timestamp. The `<audio>` element is hidden and wired u
 
 Instagram embeds use a fixed aspect ratio wrapper (116.11% padding-bottom) mirroring Tumblr's own
 dashboard approach. The declared dimensions in the NPF data are not always accurate so the sizing
-may be slightly off depending on caption length - this is a known limitation shared with Tumblr's
+may be slightly off depending on caption length — this is a known limitation shared with Tumblr's
 own rendering. Instagram's embed sizing is controlled by Meta and cannot be overridden from outside
 the iframe.
 
 ## Ask blocks
 
-The ask/answer structure is built in JS and can be restyled entirely with CSS - Grid and Flexbox go
+The ask/answer structure is built in JS and can be restyled entirely with CSS — Grid and Flexbox go
 a long way before you need to touch the markup. If you do want to restructure the HTML, that's in
 `renderer.js` under `buildAskThread()`.
 
@@ -143,22 +145,22 @@ a long way before you need to touch the markup. If you do want to restructure th
 
 The utilities in `ui.js` are a mix of universal and theme-specific code. What's safe to use as-is:
 
-- **Tooltips** - reads `data-tooltip` or `title` attributes, works across the whole page. Exposes
+- **Tooltips** — reads `data-tooltip` or `title` attributes, works across the whole page. Exposes
   `window.bindTooltipNode(el)` for dynamically added content.
-- **Dark mode toggle** - three-way cycle: light → dark → system.
-- **Scroll to top** - shows after 30px of scroll, smooth scrolls back.
-- **Note count formatting** - shortens note counts in `.notecount` elements (e.g. `1200` → `1k`).
+- **Dark mode toggle** — three-way cycle: light → dark → system.
+- **Scroll to top** — shows after 30px of scroll, smooth scrolls back.
+- **Note count formatting** — shortens note counts in `.notecount` elements (e.g. `1200` → `1k`).
 
 Theme-specific sections for showcasing:
 
-- **Post tag toggles** - hidden/truncated tag behavior tied to `<html>` classes set by your theme
+- **Post tag toggles** — hidden/truncated tag behavior tied to `<html>` classes set by your theme
   options.
-- **Tumblr controls** - the iframe toggle for Tumblr's built-in controls bar, positioned by your
+- **Tumblr controls** — the iframe toggle for Tumblr's built-in controls bar, positioned by your
   theme's CSS.
 
 ## Using this as a base
 
-This repo is intentionally minimal - it handles rendering and common interactions but makes no
+This repo is intentionally minimal — it handles rendering and common interactions but makes no
 assumptions about CSS or layout. Build your theme's styles on top of the class names the renderer
 outputs.
 
@@ -185,13 +187,13 @@ outputs.
 | `.is_root`                  | First entry in reblog trail (applied to `.post_body`) |
 | `.is_trail`                 | Reblog trail entries (applied to `.post_body`)        |
 
-To explore the full output, open your browser's DevTools and inspect a rendered post - the DOM is
+To explore the full output, open your browser's DevTools and inspect a rendered post — the DOM is
 the documentation. Every class name the renderer produces will be visible there.
 
 ### A note on legacy post types
 
 This basecode does not mimic the old Tumblr legacy layout. While I love the nostalgia myself -
-moving the root poster's header below the first media (photoset, for example) - it comes at a cost:
+moving the root poster's header below the first media (photoset, for example) — it comes at a cost:
 the visual order no longer matches the DOM order, which is confusing for screen readers and keyboard
 navigation, and general overview of a blog.
 
@@ -206,4 +208,4 @@ simplification.
 
 ## License
 
-MIT - Flipse / [@mournstera](https://mournstera.tumblr.com)
+MIT — Flipse / [@mournstera](https://mournstera.tumblr.com)
