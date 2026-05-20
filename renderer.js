@@ -1252,7 +1252,7 @@
         return frag;
     }
 
-    // -------------------- THREAD (reblog trail) RENDERER --------------------
+    // -------------------- THREAD RENDERER --------------------
     // Walks the reblog trail and renders each entry.
     // Index 0 = reblog root; its user header is rendered outside
     // section.post-content by bootstrap(), so we skip it here.
@@ -1319,10 +1319,10 @@
     }
 
     // -------------------- STATIC PAGE --------------------
-    // Handles static pages (custom pages, ask, submit) in Tumblr's preview sandbox,
-    // where {NPF} is always empty. Reads raw HTML from .page_body_raw, remaps
-    // elements to theme classes, and prepends the ask/submit label heading if needed.
-    // Retains any class names the user added to elements
+    // Handles static custom pages where {NPF} is always empty.
+    // Reads raw HTML from the <template> inside .page_body_raw, remaps
+    // elements to theme classes, and preserves any class names the user added.
+    // Ask and submit pages are excluded - they use hardcoded template blocks instead.
 
     function buildPageFallback(article, section, html) {
         if (html.classList.contains('ask_page') || html.classList.contains('submit_page')) return;
