@@ -1021,7 +1021,7 @@
         const img = document.createElement('img');
         img.src =
             avatarUrl ||
-            (name && !isBroken
+            (name && !isBroken && active !== false
                 ? 'https://api.tumblr.com/v2/blog/' + name + '/avatar/64'
                 : 'https://assets.tumblr.com/pop/src/assets/images/avatar/anonymous_avatar_96-223fabe0.png');
         img.alt = '';
@@ -1322,8 +1322,8 @@
     // Handles static custom pages where {NPF} is always empty.
     // Reads raw HTML from the <template> inside .page_body_raw, remaps
     // elements to theme classes, and preserves any class names the user added.
-    // Ask and submit pages are excluded - they use hardcoded template blocks instead.
-    // page title (h2 post-heading1) is hardcoded and uses data-page-title so live + preview work equally.
+    // Ask and submit pages are excluded — they use hardcoded template blocks instead.
+    // Page title is sourced from data-page-title on the article element via {Title}.
 
     function buildPageFallback(article, section, html) {
         if (html.classList.contains('ask_page') || html.classList.contains('submit_page')) return;
