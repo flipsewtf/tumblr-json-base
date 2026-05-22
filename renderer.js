@@ -1333,6 +1333,13 @@
         const body = document.createElement('div');
         body.classList.add('post_body');
 
+        if (article.dataset.pageTitle) {
+            const heading = document.createElement('h2');
+            heading.classList.add('post-heading1');
+            heading.textContent = article.dataset.pageTitle;
+            body.appendChild(heading);
+        }
+
         function remapNode(node) {
             if (node.nodeType !== Node.ELEMENT_NODE) return node.cloneNode(true);
             const tag = node.tagName.toLowerCase();
