@@ -104,6 +104,9 @@ Ask and submit pages are excluded from `buildPageFallback()` entirely. They use 
 script needs to control the ask/submit form iframes directly — routing them through JS breaks the
 responsive height behaviour.
 
+The page title is sourced from `{Title}` via a `data-page-title` attribute on the article element
+and prepended as an `<h2 class="post-heading1">` when present.
+
 ### User headers
 
 The root/original poster's avatar and username are rendered into `<header class="post-header">`
