@@ -171,6 +171,7 @@
 
     const root = document.documentElement;
     const storageKey = 'theme-mode';
+    const order = ['light', 'system', 'dark'];
 
     const getStoredMode = () => localStorage.getItem(storageKey) || 'system';
 
@@ -187,12 +188,19 @@
         return mode === 'dark' ? 'Dark theme' : 'Light theme';
     };
 
-    const applyTheme = (mode) => {
+    const getDirection = (from, to) =>
+        order.indexOf(to) > order.indexOf(from) ? 'forward' : 'backward';
+
+    const applyTheme = (mode, prevMode) => {
         const theme = resolveTheme(mode);
 
         root.classList.add('no-transition');
         root.setAttribute('data-theme', theme);
         root.setAttribute('data-theme-mode', mode);
+
+        if (prevMode) {
+            root.setAttribute('data-theme-direction', getDirection(prevMode, mode));
+        }
 
         buttons.forEach((btn) => {
             btn.setAttribute('aria-label', getTooltipText(mode));
@@ -212,11 +220,19 @@
     buttons.forEach((btn) => {
         btn.addEventListener('click', () => {
             const current = getStoredMode();
+            const currentIndex = order.indexOf(current);
+            const direction = root.getAttribute('data-theme-direction') || 'forward';
 
-            const next = current === 'light' ? 'dark' : current === 'dark' ? 'system' : 'light';
+            let nextIndex;
+            if (direction === 'forward') {
+                nextIndex = currentIndex + 1 >= order.length ? currentIndex - 1 : currentIndex + 1;
+            } else {
+                nextIndex = currentIndex - 1 < 0 ? currentIndex + 1 : currentIndex - 1;
+            }
 
+            const next = order[nextIndex];
             setMode(next);
-            applyTheme(next);
+            applyTheme(next, current);
         });
     });
 
