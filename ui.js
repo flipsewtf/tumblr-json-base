@@ -18,7 +18,7 @@
     const SCROLLBAR_WIDTH = 16;
 
     const tooltip = document.createElement('div');
-    tooltip.className = 'mournstera-tooltip';
+    tooltip.className = 'custom-tooltip';
     document.body.appendChild(tooltip);
 
     let activeEl = null;
@@ -264,7 +264,7 @@
         const tooltipText = !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls';
         controls.setAttribute('data-tooltip', tooltipText);
 
-        const tooltipEl = document.querySelector('.mournstera-tooltip');
+        const tooltipEl = document.querySelector('.custom-tooltip');
         if (tooltipEl && tooltipEl.classList.contains('is-active')) {
             tooltipEl.textContent = tooltipText;
         }
@@ -582,7 +582,7 @@ document.querySelectorAll('.notecount').forEach((el) => {
         : formatNumber(count);
 });
 
-// -------------------- POST CONTROLS --------------------
+// -------------------- LIKE CONTROL --------------------
 
 document.querySelectorAll('.controls__like').forEach((likeBtn) => {
     const likeDiv = likeBtn.querySelector('.like_button');
