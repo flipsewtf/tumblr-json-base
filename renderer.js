@@ -265,8 +265,6 @@
             credit.classList.add('photo-attribution');
             const link = document.createElement('a');
             link.href = block.attribution.url || block.attribution.blog.url;
-            link.target = '_blank';
-            link.rel = 'noopener';
             link.textContent = 'Originally posted by ' + block.attribution.blog.name;
             credit.appendChild(link);
             figure.appendChild(credit);
@@ -419,8 +417,6 @@
             } else if (block.url) {
                 const a = document.createElement('a');
                 a.href = block.url;
-                a.target = '_blank';
-                a.rel = 'noopener';
                 a.textContent = block.title || block.url;
                 figure.appendChild(a);
             }
@@ -568,8 +564,6 @@
         } else if (block.url) {
             const a = document.createElement('a');
             a.href = block.url;
-            a.target = '_blank';
-            a.rel = 'noopener';
             a.textContent = block.url;
             container.appendChild(a);
         }
@@ -625,8 +619,6 @@
 
                 if (context?.blogName && context?.postId) {
                     a.href = 'https://www.tumblr.com/' + context.blogName + '/' + context.postId;
-                    a.target = '_blank';
-                    a.rel = 'noopener';
                     a.setAttribute('aria-label', 'Vote for: ' + answer.answer_text);
                 }
 
@@ -649,8 +641,6 @@
                     results.classList.add('poll__results');
                     results.href =
                         'https://www.tumblr.com/' + context.blogName + '/' + context.postId;
-                    results.target = '_blank';
-                    results.rel = 'noopener';
                     results.textContent = 'See results';
                     footer.appendChild(results);
                 }
@@ -1039,8 +1029,6 @@
 
         if (!isDeactivated && !isBroken && url) {
             username.href = url;
-            username.target = '_blank';
-            username.rel = 'noopener';
         }
 
         if (isDeactivated) {
@@ -1151,8 +1139,6 @@
         askUsername.textContent = askerDisplay;
         if (askerUrl && askerActive !== false) {
             askUsername.href = askerUrl;
-            askUsername.target = '_blank';
-            askUsername.rel = 'noopener';
         }
         if (askerActive === false) {
             askUsername.classList.add('deactivated');
@@ -1214,8 +1200,6 @@
                 answerUsername.textContent = answererDisplay;
                 if (answerer.url && answerer.active !== false) {
                     answerUsername.href = answerer.url;
-                    answerUsername.target = '_blank';
-                    answerUsername.rel = 'noopener';
                 }
                 if (answerer.active === false) {
                     answerUsername.classList.add('deactivated');
