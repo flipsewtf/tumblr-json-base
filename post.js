@@ -306,3 +306,17 @@ document.addEventListener('npf:rendered', () => {
 
     handleAudioPosts();
 });
+
+// -------------------- ORPHAN TEXT WRAPPER --------------------
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.post_body').forEach((body) => {
+        [...body.childNodes].forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                const p = document.createElement('p');
+                body.insertBefore(p, node);
+                p.appendChild(node);
+            }
+        });
+    });
+});
