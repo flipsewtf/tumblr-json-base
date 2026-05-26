@@ -23,6 +23,12 @@
 
     let activeEl = null;
 
+    function dismissTooltip() {
+        tooltip.classList.remove('is-active');
+        tooltip.style.visibility = 'hidden';
+        activeEl = null;
+    }
+
     function bind(el) {
         el.addEventListener('mouseover', onEnter);
         el.addEventListener('mouseout', onLeave);
@@ -119,8 +125,7 @@
             delete el.dataset.title;
         }
 
-        activeEl = null;
-        tooltip.classList.remove('is-active');
+        dismissTooltip();
     }
 
     const observer = new MutationObserver((mutations) => {
@@ -160,6 +165,9 @@
         attributes: true,
         attributeFilter: ['data-tooltip'],
     });
+
+    document.addEventListener('mousedown', dismissTooltip);
+    document.addEventListener('mouseleave', dismissTooltip);
 })();
 
 // -------------------- DARK MODE --------------------
@@ -245,39 +253,38 @@
 
 // -------------------- TUMBLR CONTROLS --------------------
 
-(function () {
-    'use strict';
+// (function () {
+//     'use strict';
 
-    const controls = document.querySelector('button.tumblr-controls');
-    if (!controls) return;
+//     const controls = document.querySelector('button.tumblr-controls');
+//     if (!controls) return;
 
-    controls.addEventListener('click', function () {
-        const isPressed = controls.classList.contains('pressed');
+//     controls.addEventListener('click', function () {
+//         const isPressed = controls.classList.contains('pressed');
 
-        controls.classList.toggle('pressed', !isPressed);
-        controls.setAttribute('aria-expanded', String(!isPressed));
-        controls.setAttribute(
-            'aria-label',
-            !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls',
-        );
+//         controls.classList.toggle('pressed', !isPressed);
+//         controls.setAttribute('aria-expanded', String(!isPressed));
+//         controls.setAttribute(
+//             'aria-label',
+//             !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls',
+//         );
 
-        const tooltipText = !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls';
-        controls.setAttribute('data-tooltip', tooltipText);
+//         const tooltipText = !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls';
+//         controls.setAttribute('data-tooltip', tooltipText);
 
-        const tooltipEl = document.querySelector('.custom-tooltip');
-        if (tooltipEl && tooltipEl.classList.contains('is-active')) {
-            tooltipEl.textContent = tooltipText;
-        }
+//         const tooltipEl = document.querySelector('.custom-tooltip');
+//         if (tooltipEl && tooltipEl.classList.contains('is-active')) {
+//             tooltipEl.textContent = tooltipText;
+//         }
 
-        const iframe = document.querySelector('iframe.tmblr-iframe');
-        if (iframe) {
-            iframe.classList.toggle('pressed', !isPressed);
-            iframe.setAttribute('aria-hidden', String(isPressed));
-        }
+//         const iframe = document.querySelector('iframe.tmblr-iframe');
+//         if (iframe) {
+//             iframe.classList.toggle('pressed', !isPressed);
+//             iframe.setAttribute('aria-hidden', String(isPressed));
+//         }
 
-        document.querySelector('.theme-toggle')?.classList.toggle('hide');
-    });
-})();
+//     });
+// })();
 
 // -------------------- SCROLL TO TOP --------------------
 
