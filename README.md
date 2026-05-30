@@ -14,6 +14,7 @@ This codebase is built with accessibility as a baseline, not an afterthought:
 - Lightbox is a proper `role="dialog"` with focus trapping, focus return on close, and full keyboard
   navigation (arrow keys, Escape).
 - Audio player controls have `aria-label` attributes and live region announcements.
+- Link block anchors have aria-label combining the link title and host for screen readers.
 - Photosets use `role="group"` with an `aria-label` when more than one image is present.
 - Poll blocks use `role="region"` and individual vote links have descriptive `aria-label`
   attributes.
@@ -169,26 +170,27 @@ outputs.
 
 ## Key class names from the renderer
 
-| Class                       | What it is                                            |
-| --------------------------- | ----------------------------------------------------- |
-| `.user-header`              | Blog avatar + username row                            |
-| `.user-header__avatar`      | Avatar image container                                |
-| `.user-header__name`        | Blog name link                                        |
-| `.user-header__original`    | Original post author header (article header)          |
-| `.user-header__root`        | Root post author in a reblog chain (article header)   |
-| `.user-header__trail`       | Reblog trail author header (inside post content)      |
-| `.post_body`                | Wrapper for post or trail entry content               |
-| `.post_block__photo`        | Single image, photoset container, or inline image     |
-| `.post_block__photoset`     | Photoset grid                                         |
-| `.post_block__inline_image` | Inline image below 350px                              |
-| `.post_block__link`         | Link post                                             |
-| `.post_block__audio`        | Audio block figure                                    |
-| `.post_block__video`        | Video block container                                 |
-| `.post_block__poll`         | Poll container                                        |
-| `.post_block__ask`          | Ask or answer body                                    |
-| `.ask__container`           | Full ask/answer block including header                |
-| `.is_root`                  | First entry in reblog trail (applied to `.post_body`) |
-| `.is_trail`                 | Reblog trail entries (applied to `.post_body`)        |
+| Class                       | What it is                                                                |
+| --------------------------- | ------------------------------------------------------------------------- |
+| `.user-header`              | Blog avatar + username row                                                |
+| `.user-header__avatar`      | Avatar image container                                                    |
+| `.user-header__name`        | Blog name link                                                            |
+| `.user-header__original`    | Original post author header (article header)                              |
+| `.user-header__root`        | Root post author in a reblog chain (article header)                       |
+| `.user-header__trail`       | Reblog trail author header (inside post content)                          |
+| `.post_body`                | Wrapper for post or trail entry content                                   |
+| `.post_block__photo`        | Applied to all image containers                                           |
+| `.post_block__photoset`     | Photoset grid (always paired with `.post_block__photo`)                   |
+| `.post_block__inline_image` | Image below 350px natural width (always paired with `.post_block__photo`) |
+| `.photoset__image`          | Individual figure inside a photoset                                       |
+| `.post_block__link`         | Link post                                                                 |
+| `.post_block__audio`        | Audio block figure                                                        |
+| `.post_block__video`        | Video block container                                                     |
+| `.post_block__poll`         | Poll container                                                            |
+| `.post_block__ask`          | Ask or answer body                                                        |
+| `.ask__container`           | Full ask/answer block including header                                    |
+| `.is_root`                  | First entry in reblog trail (applied to `.post_body`)                     |
+| `.is_trail`                 | Reblog trail entries (applied to `.post_body`)                            |
 
 To explore the full output, open your browser's DevTools and inspect a rendered post — the DOM is
 the documentation. Every class name the renderer produces will be visible there.
