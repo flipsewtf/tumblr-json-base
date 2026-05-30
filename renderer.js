@@ -279,11 +279,27 @@
         const wrapper = document.createElement('div');
         wrapper.classList.add('post_block__link');
 
+        // ---- RESOLVE HOST ----
+        let host = block.site_name || null;
+        if (!host && block.url) {
+            try {
+                host = new URL(block.url).hostname;
+            } catch (e) {
+                host = block.url;
+            }
+        }
+
         const anchor = document.createElement('a');
         anchor.classList.add('link__container');
         anchor.href = block.url;
         anchor.target = '_blank';
         anchor.rel = 'noopener noreferrer';
+        if (block.title || host) {
+            anchor.setAttribute(
+                'aria-label',
+                [block.title, host ? '(' + host + ')' : ''].filter(Boolean).join(' '),
+            );
+        }
 
         // ---- POSTER ----
         const poster = document.createElement('div');
@@ -322,46 +338,35 @@
         }
 
         // ---- HOST CONTAINER (inside poster) ----
-        if (block.site_name || block.url) {
-            let host = block.site_name;
-            if (!host) {
-                try {
-                    host = new URL(block.url).hostname;
-                } catch (e) {
-                    host = block.url;
-                }
-            }
+        if (host) {
+            const hostContainer = document.createElement('div');
+            hostContainer.classList.add('link__host-container');
 
-            if (host) {
-                const hostContainer = document.createElement('div');
-                hostContainer.classList.add('link__host-container');
+            const hostSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            hostSvg.setAttribute('viewBox', '0 0 24 24');
+            hostSvg.setAttribute('class', 'link__host-icon');
+            hostSvg.setAttribute('aria-hidden', 'true');
+            ['M9 17H7A5 5 0 0 1 7 7h2', 'M15 7h2a5 5 0 1 1 0 10h-2'].forEach((d) => {
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', d);
+                hostSvg.appendChild(path);
+            });
 
-                const hostSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                hostSvg.setAttribute('viewBox', '0 0 24 24');
-                hostSvg.setAttribute('class', 'link__host-icon');
-                hostSvg.setAttribute('aria-hidden', 'true');
-                ['M9 17H7A5 5 0 0 1 7 7h2', 'M15 7h2a5 5 0 1 1 0 10h-2'].forEach((d) => {
-                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    path.setAttribute('d', d);
-                    hostSvg.appendChild(path);
-                });
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '8');
+            line.setAttribute('x2', '16');
+            line.setAttribute('y1', '12');
+            line.setAttribute('y2', '12');
 
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', '8');
-                line.setAttribute('x2', '16');
-                line.setAttribute('y1', '12');
-                line.setAttribute('y2', '12');
+            hostSvg.appendChild(line);
 
-                hostSvg.appendChild(line);
+            const hostSpan = document.createElement('span');
+            hostSpan.classList.add('link__host');
+            hostSpan.setAttribute('aria-label', 'Host: ' + host);
+            hostSpan.textContent = host;
 
-                const hostSpan = document.createElement('span');
-                hostSpan.classList.add('link__host');
-                hostSpan.setAttribute('aria-label', 'Host: ' + host);
-                hostSpan.textContent = host;
-
-                hostContainer.append(hostSvg, hostSpan);
-                poster.appendChild(hostContainer);
-            }
+            hostContainer.append(hostSvg, hostSpan);
+            poster.appendChild(hostContainer);
         }
 
         anchor.appendChild(poster);
