@@ -573,7 +573,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // -------------------- FORMAT NOTE COUNTS --------------------
 // formats .notecount elements to shorthand (e.g. 1200 → 1.2k)
-// add has-label to the notecount element to append 'Notes' e.g. <span class="notecount has-label">{NoteCount}</span>
+// add has-label to the notecount element to append 'Notes' e.g.
+// <span class="notecount has-label">{NoteCount}</span>
+
 document.querySelectorAll('.notecount').forEach((el) => {
     const rawNumber = el.textContent.trim().replace(/,/g, '').match(/\d+/);
     if (!rawNumber) return;
@@ -590,6 +592,7 @@ document.querySelectorAll('.notecount').forEach((el) => {
 });
 
 // -------------------- LIKE CONTROL --------------------
+// Updates aria and tooltip
 
 document.querySelectorAll('.controls__like').forEach((likeBtn) => {
     const likeDiv = likeBtn.querySelector('.like_button');
