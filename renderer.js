@@ -506,7 +506,7 @@
         const container = document.createElement('div');
         container.classList.add('post_block__video');
 
-        //native
+        // native
         if (block.provider === 'tumblr' && block.media) {
             const video = document.createElement('video');
             video.controls = true;
@@ -518,7 +518,6 @@
                 video.poster = selectMedia(block.poster, 1280).url;
             }
             container.appendChild(video);
-            // embed
         } else if (block.embed_iframe) {
             const iframe = document.createElement('iframe');
             iframe.src = block.embed_iframe.url;
@@ -699,13 +698,8 @@
 
     // Parses blocks + layout into a flat ordered item list, respecting
     // the rows layout display order and flagging unplaced blocks.
+    // Elements are built and attached in assembleContent() before groupItems() runs.
     function resolveLayout(blocks, layout) {
-        const rendered = blocks.map((block, i) => ({ block, el: null, index: i }));
-
-        // Pre-build elements - kept separate from layout resolution
-        // so resolveLayout stays pure (index/flag logic only).
-        // Elements are attached back by reference before groupItems() runs.
-
         let rowsLayout = null;
         let truncateAfter = -1;
 
