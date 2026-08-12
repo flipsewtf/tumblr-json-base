@@ -1,3 +1,0 @@
-# Notes and reasonings
-
-tba
