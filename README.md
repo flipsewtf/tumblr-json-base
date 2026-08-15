@@ -1,8 +1,5 @@
 # tumblr-json-base
 
-> [!IMPORTANT]  
-> Work in progress. Not ready for use. html file will be added when ready.
-
 A basecode for building Tumblr themes with NPF (Neue Post Format) rendering. Handles the full post
 body — trail, reblogs, asks, images (inline and photosets), audio, video, polls, and inline
 formatting — plus a lightbox, audio player, and common UI utilities.
@@ -47,12 +44,46 @@ Order matters — `post.js` must come before `renderer.js`.
 deactivated/unavailable blog indicators. You can drop the rest of `ui.js` and keep just the tooltip
 code if you prefer, or add your own theme-specific scripts in it.
 
+## ⚠️ The `<html>` class string
+
+The renderer needs certain Tumblr template blocks to join up into **a single class name**, with no
+spaces or line breaks between them. This applies specifically to:
+
+```html
+{block:AskPage}ask{/block:AskPage}{block:IndexPage}index{/block:IndexPage}_page
+```
+
+On the ask page, this must render as one single class name — `ask_page` — because `renderer.js`
+checks for it with `classList.contains('ask_page')` to skip building an ask thread on ask/submit
+pages (these use hardcoded `{block:AskPage}`/`{block:SubmitPage}` blocks instead — see
+[Static pages](#static-pages)).
+
+**If there's a space anywhere inside that block sequence**, Tumblr renders `ask` and `_page` as two
+separate classes instead of one. The `classList.contains('ask_page')` check then silently fails, so
+the early return never fires — and `renderer.js` goes ahead and builds its own ask thread in JS on
+top of the hardcoded `{block:AskPage}` block that's already in the template. You end up with the ask
+form rendered twice: once from the template, once from the script.
+
+**Do not add spaces or line breaks inside this block sequence:**
+
+```html
+<!-- correct -->
+{block:AskPage}ask{/block:AskPage}{block:IndexPage}index{/block:IndexPage}_page
+
+<!-- wrong — breaks ask/submit pages -->
+{block:AskPage}ask{/block:AskPage} {block:IndexPage}index{/block:IndexPage}_page
+```
+
+Everything else appended to the `<html>` class (`{block:PermalinkPage}`, `{select:}` values, etc.)
+can be freely spaced — they output as standalone tokens regardless, since they don't combine two
+blocks into one word the way `ask`/`_page` do.
+
 ## Credit
 
-If you use this codebase in your theme, you must include a visible credit link back to either:
+If you use this codebase in your theme, you must include a visible credit link back to both:
 
 - This repo: `https://github.com/flipsewtf/tumblr-json-base`
-- or [mournstera.tumblr.com](https://mournstera.tumblr.com)
+- and [mournstera.tumblr.com](https://mournstera.tumblr.com)
 
 In your theme file and/or credit page.
 
@@ -78,9 +109,11 @@ tag. This is intentional for two reasons:
 
 The tradeoff is that the browser parses the div contents as HTML, which produces console errors for
 posts with messy `embed_html` (e.g. Instagram). These errors are harmless — posts still render
-correctly!
+correctly! (The console for Tumblr is messy anyways.)
 
-(The console for Tumblr is messy anyways.)
+`renderer.js` looks for `section.post-content` inside each `article` and mounts the rendered post
+body into it (via `bootstrap()`). This element must exist in your template with that exact class —
+the renderer won't create it for you.
 
 ### Static pages
 
@@ -111,9 +144,10 @@ and prepended as an `<h2 class="post-heading1">` when present.
 ### User headers
 
 The root/original poster's avatar and username are rendered into `<header class="post-header">`
-_outside_ `section.post-content`. This allows different styling for the root poster (larger avatar,
-different layout, pinned content alongside, etc.) compared to trail entries, which render inside the
-post body.
+_outside_ `section.post-content`. This is a structural choice, not a requirement — it means you
+_can_ style the root poster differently from trail entries (larger avatar, different layout, pinned
+content alongside, etc.) if you want to, since trail entries render inside the post body instead.
+You're free to style them identically. Versatility above rigidity.
 
 For the blog owner's own posts, `blogName`/`blogUrl` from Tumblr template variables are used since
 `{JSName}` is always current. For reblogs, `trail[0].blog` is used instead, which reflects what
@@ -138,6 +172,40 @@ dashboard approach. The declared dimensions in the NPF data are not always accur
 may be slightly off depending on caption length — this is a known limitation shared with Tumblr's
 own rendering. Instagram's embed sizing is controlled by Meta and cannot be overridden from outside
 the iframe.
+
+## CSS architecture: mobile-first
+
+This basecode is written mobile-first — the CSS with no media query attached is the mobile layout,
+and desktop is the override, not the other way round.
+
+```css
+main {
+    display: grid;
+    grid-template-areas: 'sb' 'post';
+    grid-template-columns: var(--layout--post-column);
+}
+
+@media (width > calc(2rem + {select:POST Width} + {select:SIDEBAR Width} + {select:BASE Layout Gap})) {
+    main {
+        grid-template-columns: var(--layout--sidebar-width) var(--layout--post-column);
+        grid-template-areas: 'sb post';
+    }
+}
+```
+
+The sidebar sits stacked above the post column by default, full viewport width. One
+`min-width`-style media query swaps `grid-template-areas` to place them side by side once there's
+room for both — no separate mobile stylesheet, no `display: none` toggling between breakpoints, no
+duplicated layout rules to keep in sync.
+
+The breakpoint itself is calculated from the customizer's `{select:POST Width}` and
+`{select:SIDEBAR Width}` values rather than a fixed pixel number, so it always matches whatever the
+user has actually configured — a wider post column pushes the switch to two-column further out
+automatically.
+
+**Why this matters if you're extending the theme:** write new rules with no media query first (as
+they'd look on a phone), then wrap only the parts that need to _change_ for wider viewports in a
+`min-width` query.
 
 ## Ask blocks
 
@@ -204,7 +272,7 @@ navigation, and general overview of a blog.
 
 ## Credits
 
-SVG icons: [Lucide](https://lucide.dev/) and [Tabler](https://tabler.io/icons).
+SVG icons: [Tabler](https://tabler.io/icons).
 
 Euclid’s GCD: inspired by a GCD approach from
 [this post](https://gist.github.com/zlw5009/2b886c3b87f964fde865b59dde19c685), adapted for this

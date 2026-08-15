@@ -1,10 +1,12 @@
+/*!
+ * ui.js - for NPF JSON theme
+ * @mournstera | mournstera.tumblr.com
+ */
+
 // -------------------- TOOLTIPS --------------------
-// tooltip-nowrap: class applied to containers with fixed-position
-// elements (e.g. corner controls). Tooltips inside use fixed
-// positioning + clientX/Y instead of absolute + pageX/Y,
-// and account for the scrollbar gutter width when clamping
-// to the viewport edge:
-// `const NOWRAP_CONTAINER = 'tooltip-nowrap';`
+// tooltip-nowrap: applied to containers with fixed-position elements
+// (e.g. corner controls) where tooltips need fixed positioning and
+// clientX/Y coords instead of absolute + pageX/Y.
 
 (function () {
     'use strict';
@@ -166,12 +168,24 @@
         attributeFilter: ['data-tooltip'],
     });
 
+    window.showCustomTooltip = function (el, text, event) {
+        activeEl = el;
+        tooltip.textContent = text;
+        tooltip.classList.toggle('nowrap-tooltip', !!el.closest(`.${NOWRAP_CONTAINER}`));
+        tooltip.classList.add('is-active');
+        onMove(event);
+    };
+
+    window.hideCustomTooltip = function (el) {
+        if (activeEl === el) dismissTooltip();
+    };
+
     document.addEventListener('mousedown', dismissTooltip);
     document.addEventListener('mouseleave', dismissTooltip);
 })();
 
 // -------------------- DARK MODE --------------------
-// localStorage inside <head> with is:inline
+// localStorage inside <head>
 
 (() => {
     const buttons = document.querySelectorAll('.theme-toggle');
@@ -251,41 +265,6 @@
     });
 })();
 
-// -------------------- TUMBLR CONTROLS --------------------
-
-// (function () {
-//     'use strict';
-
-//     const controls = document.querySelector('button.tumblr-controls');
-//     if (!controls) return;
-
-//     controls.addEventListener('click', function () {
-//         const isPressed = controls.classList.contains('pressed');
-
-//         controls.classList.toggle('pressed', !isPressed);
-//         controls.setAttribute('aria-expanded', String(!isPressed));
-//         controls.setAttribute(
-//             'aria-label',
-//             !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls',
-//         );
-
-//         const tooltipText = !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls';
-//         controls.setAttribute('data-tooltip', tooltipText);
-
-//         const tooltipEl = document.querySelector('.custom-tooltip');
-//         if (tooltipEl && tooltipEl.classList.contains('is-active')) {
-//             tooltipEl.textContent = tooltipText;
-//         }
-
-//         const iframe = document.querySelector('iframe.tmblr-iframe');
-//         if (iframe) {
-//             iframe.classList.toggle('pressed', !isPressed);
-//             iframe.setAttribute('aria-hidden', String(isPressed));
-//         }
-
-//     });
-// })();
-
 // -------------------- SCROLL TO TOP --------------------
 
 const html = document.documentElement;
@@ -306,35 +285,12 @@ if (scrollButton) {
     });
 }
 
-// -------------------- COPY CLIPBOARD --------------------
-
-document.querySelectorAll('[aria-label="Copy link to post"]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-        const url = btn.getAttribute('data-url');
-        const span = btn.querySelector('span');
-
-        navigator.clipboard
-            .writeText(url)
-            .then(() => {
-                span.textContent = 'Copied!';
-                setTimeout(() => (span.textContent = 'Copy link'), 2000);
-            })
-            .catch(() => {
-                span.textContent = 'Failed';
-                setTimeout(() => (span.textContent = 'Copy link'), 2000);
-            });
-    });
-});
-
 // -------------------- POST TAGS --------------------
 
 document.addEventListener('DOMContentLoaded', () => {
     // -------------------- BEHIND TOGGLE
 
-    if (
-        document.documentElement.classList.contains('tags--hidden') &&
-        !document.documentElement.classList.contains('permalink_page')
-    ) {
+    if (document.documentElement.classList.contains('tags--hidden')) {
         const toggleTagsElements = document.querySelectorAll('.toggle-tags');
 
         toggleTagsElements.forEach(function (element) {
@@ -368,10 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // -------------------- TAGS TRUNCATED
 
-    if (
-        document.documentElement.classList.contains('tags--truncated') &&
-        !document.documentElement.classList.contains('permalink_page')
-    ) {
+    if (document.documentElement.classList.contains('tags--truncated')) {
         const maxVisibleTags = 4;
 
         const containers = document.querySelectorAll('.tags--truncated .tags-container .tags');
@@ -436,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // -------------------- FORMAT TIMESTAMP --------------------
-// configure and initialize in the html document
+// configure and initialize below this function
 
 (function () {
     const UNITS = [
@@ -571,8 +524,21 @@ document.addEventListener('DOMContentLoaded', () => {
     window.timeAgo = timeAgo;
 })();
 
+// -------------------- FORMAT TIMESTAMP --------------------
+// configure timestamp format options here
+
+timeAgo(document.querySelectorAll('[data-timestamp]'), {
+    time: 'letter',
+    spaces: false,
+    words: false,
+    prefix: '',
+    suffix: '',
+    ago: false,
+    months: true,
+});
+
 // -------------------- FORMAT NOTE COUNTS --------------------
-// formats .notecount elements to shorthand (e.g. 1200 → 1.2k)
+// formats .notecount elements to shorthand (e.g. 1200 = 1.2k)
 // add has-label to the notecount element to append 'Notes' e.g.
 // <span class="notecount has-label">{NoteCount}</span>
 
@@ -610,3 +576,190 @@ document.querySelectorAll('.controls__like').forEach((likeBtn) => {
     const observer = new MutationObserver(updateLike);
     observer.observe(likeDiv, { attributes: true, attributeFilter: ['class'] });
 });
+
+// -------------------- LIKE ANIMATION --------------------
+
+document.querySelectorAll('.controls__like').forEach((likeBtn) => {
+    const likeDiv = likeBtn.querySelector('.like_button');
+    if (!likeDiv) return;
+
+    let prevLiked = likeDiv.classList.contains('liked');
+
+    const observer = new MutationObserver(() => {
+        const isLiked = likeDiv.classList.contains('liked');
+        if (isLiked && !prevLiked) {
+            const icon = likeBtn.querySelector('.controls__like-icon');
+            icon.style.animation = 'none';
+            icon.offsetWidth;
+            icon.style.animation = 'like-anim 0.5s ease-in-out';
+            icon.addEventListener(
+                'animationend',
+                () => {
+                    icon.style.animation = '';
+                },
+                { once: true },
+            );
+        }
+        prevLiked = isLiked;
+    });
+
+    observer.observe(likeDiv, { attributes: true, attributeFilter: ['class'] });
+});
+
+// -------------------- COPY CLIPBOARD --------------------
+
+document.querySelectorAll('[aria-label="Copy link to post"]').forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+        const url = btn.getAttribute('data-url');
+        const originalTooltip = btn.getAttribute('data-tooltip');
+
+        function showFeedback(text) {
+            btn.setAttribute('data-tooltip', text);
+            window.showCustomTooltip(btn, text, event);
+
+            setTimeout(() => {
+                btn.setAttribute('data-tooltip', originalTooltip);
+                window.hideCustomTooltip(btn);
+            }, 2000);
+        }
+
+        navigator.clipboard
+            .writeText(url)
+            .then(() => showFeedback('Copied!'))
+            .catch(() => showFeedback('Failed'));
+    });
+});
+
+// -------------------- TUMBLR CONTROLS --------------------
+
+(function () {
+    'use strict';
+
+    const controls = document.querySelector('button.tumblr-controls');
+    if (!controls) return;
+
+    controls.addEventListener('click', function () {
+        const isPressed = controls.classList.contains('pressed');
+
+        controls.classList.toggle('pressed', !isPressed);
+        controls.setAttribute('aria-expanded', String(!isPressed));
+        controls.setAttribute(
+            'aria-label',
+            !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls',
+        );
+
+        const tooltipText = !isPressed ? 'Close Tumblr controls' : 'Open Tumblr controls';
+        controls.setAttribute('data-tooltip', tooltipText);
+
+        const tooltipEl = document.querySelector('.custom-tooltip');
+        if (tooltipEl && tooltipEl.classList.contains('is-active')) {
+            tooltipEl.textContent = tooltipText;
+        }
+
+        const iframe = document.querySelector('iframe.tmblr-iframe');
+        if (iframe) {
+            iframe.classList.toggle('pressed', !isPressed);
+            iframe.setAttribute('aria-hidden', String(isPressed));
+        }
+
+        document.querySelectorAll('.theme-toggle').forEach((el) => {
+            el.classList.toggle('hide');
+        });
+    });
+})();
+
+// -------------------- FEATURED TAGS --------------------
+
+(() => {
+    if (
+        !document.documentElement.classList.contains('featured-tags--active') &&
+        !document.documentElement.classList.contains('featured-tags--inline')
+    )
+        return;
+
+    const blog = window.blogName;
+    if (!blog) return;
+
+    const featuredTags = document.querySelectorAll('ul.feat a[href*="/tagged"]');
+    const THROTTLE_MS = 100;
+
+    function getScript(scriptUrl, callback, errorCallback) {
+        const script = document.createElement('script');
+        script.src = scriptUrl;
+        script.onload = callback;
+        script.onerror = errorCallback;
+        document.body.appendChild(script);
+    }
+
+    function fetchTagCount(tag) {
+        const tagged = tag.href.split('/tagged/')[1] || 'unknown';
+        const totalSpan = tag.querySelector('.total');
+        const tagUrl = `https://${blog}.tumblr.com/api/read/json?tagged=${tagged}`;
+
+        function onErrors() {
+            const nameSpan = tag.querySelector('.tagname');
+            if (nameSpan) nameSpan.textContent = `${tagged} not found`;
+            if (totalSpan) totalSpan.textContent = '';
+        }
+
+        function onLoad() {
+            const tagData = window.tumblr_api_read;
+            if (tagData && tagData['posts-total'] !== undefined) {
+                const total = tagData['posts-total'];
+                if (totalSpan) totalSpan.textContent = `(${total})`;
+            } else {
+                onErrors();
+            }
+        }
+
+        getScript(tagUrl, onLoad, onErrors);
+    }
+
+    featuredTags.forEach((tag, i) => {
+        setTimeout(() => fetchTagCount(tag), i * THROTTLE_MS);
+    });
+})();
+
+// -------------------- TABLER ICONS --------------------
+// Fetches only the icons actually used on the page directly from jsDelivr,
+// rather than loading the entire Tabler library bundle.
+// Icon names are read from [data-tabler-icon] attributes in the rendered HTML
+// (not from meta tags, they only reflect default values set in the theme HTML).
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTablerIcons);
+} else {
+    initTablerIcons();
+}
+
+async function initTablerIcons() {
+    const TABLER_VERSION = '3.44.0';
+
+    const iconNames = [
+        ...new Set(
+            [...document.querySelectorAll('[data-tabler-icon]')]
+                .map((el) => el.getAttribute('data-tabler-icon'))
+                .filter(Boolean),
+        ),
+    ];
+
+    const iconCache = {};
+    await Promise.all(
+        iconNames.map(async (name) => {
+            const res = await fetch(
+                `https://cdn.jsdelivr.net/npm/@tabler/icons@${TABLER_VERSION}/icons/outline/${name}.svg`,
+            );
+            if (res.ok) iconCache[name] = await res.text();
+        }),
+    );
+
+    document.querySelectorAll('[data-tabler-icon]').forEach((el) => {
+        const rawName = el.getAttribute('data-tabler-icon');
+        const name = rawName.toLowerCase().replace(/\s+/g, '-');
+        const svg = iconCache[name];
+        if (svg) {
+            el.innerHTML = svg;
+            el.querySelector('svg')?.setAttribute('aria-hidden', 'true');
+        }
+    });
+}
