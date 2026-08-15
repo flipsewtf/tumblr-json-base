@@ -4,7 +4,7 @@ A basecode for building Tumblr themes with NPF (Neue Post Format) rendering. Han
 body — trail, reblogs, asks, images (inline and photosets), audio, video, polls, and inline
 formatting — plus a lightbox, audio player, and common UI utilities.
 
-**[Live preview →](https://json-theme-base.tumblr.com/)** — devtool inspect and dig around.
+→ **[Live preview](https://json-theme-base.tumblr.com/)** — devtool inspect and dig around.
 
 ## Accessibility
 
