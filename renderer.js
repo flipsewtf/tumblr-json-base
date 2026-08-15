@@ -829,8 +829,6 @@
         return segments;
     }
 
-    // Euclid's GCD - used to compute LCM for photoset grid columns.
-    // Mads' suggestion, *not written by me*
     function gcd(a, b) {
         while (b) {
             const t = b;
@@ -842,6 +840,7 @@
 
     // Groups consecutive image items into a CSS grid photoset.
     // Uses LCM of all rowColumns values so mixed rows (e.g. 1+2, 2+3) align correctly.
+
     function createPhotoset(target, imageItems) {
         const photoset = document.createElement('div');
         photoset.classList.add('post_block__photo', 'post_block__photoset');
@@ -873,6 +872,7 @@
         }
 
         // openLightbox is defined in post.js; load order is guaranteed by the template.
+
         const figures = photoset.querySelectorAll('figure');
         figures.forEach((fig, idx) => {
             fig.addEventListener('click', () => openLightbox(lbImages, idx));
@@ -889,6 +889,7 @@
     // Mounts grouped segments into a target node.
     // Handles inline images (under 350px natural width) unless _explicitly_
     // placed in a multi-image row by the layout.
+
     function mountSegments(target, segments) {
         for (const seg of segments) {
             if (seg.type === 'photoset') {

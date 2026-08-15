@@ -4,13 +4,10 @@
  */
 
 // -------------------- LIGHTBOX --------------------
-
 (function () {
     let currentImages = [];
     let currentIndex = 0;
     let triggerElement = null;
-
-    // BUILD DOM
 
     const overlay = document.createElement('div');
     overlay.classList.add('lightbox');
@@ -65,8 +62,6 @@
     overlay.appendChild(container);
     document.body.appendChild(overlay);
 
-    // FOCUS TRAP
-
     function getFocusableElements() {
         return Array.from(
             container.querySelectorAll(
@@ -94,8 +89,6 @@
         }
     }
 
-    // SHOW
-
     function show(index) {
         const entry = currentImages[index];
         if (!entry) return;
@@ -121,8 +114,6 @@
         announcement.textContent = label;
     }
 
-    // OPEN / CLOSE
-
     function openLightbox(images, index) {
         currentImages = images;
         triggerElement = document.activeElement;
@@ -141,8 +132,6 @@
         document.removeEventListener('keydown', handleKeydown);
         triggerElement?.focus();
     }
-
-    // EVENTS
 
     function handleKeydown(e) {
         if (overlay.hidden) return;
@@ -171,14 +160,12 @@
         if (currentIndex < currentImages.length - 1) show(currentIndex + 1);
     });
 
-    // EXPOSE
-
     window.openLightbox = openLightbox;
 })();
 
 // -------------------- AUDIO PLAYER --------------------
-// Wires interactive controls (play/pause, scrubber, timestamps) onto native
-// Tumblr audio posts after renderer.js has finished building the DOM.
+// Wires interactive controls (play/pause, scrubber, timestamps) onto native Tumblr audio posts
+// after renderer.js has finished building the DOM.
 
 document.addEventListener('npf:rendered', () => {
     const playSVG =
